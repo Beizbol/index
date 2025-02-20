@@ -60,20 +60,29 @@ pub fn main() !void {
         try list.appendSlice("\",\n\t\t\"body\": [\n");
 
         // Parsing Body
-
         var line_iter = std.mem.tokenizeAny(u8, bytes, "\r\n");
         while (line_iter.next()) |line| {
+            std.debug.print("line: {s}\n", .{line});
+            try list.append('\t');
+            try list.append('\t');
+            try list.append('\t');
             try list.append('"');
 
-            var i: usize = 0;
             // escape line for json string
-            while (std.mem.indexOfScalarPos(u8, line, i, '"')) |_i| {
-                if (_i > 0) try list.appendSlice(line[0.._i]);
-                try list.append('\\');
-                try list.append('"');
-                i = _i + 1;
+            if (std.mem.indexOfScalarPos(u8, line, 0, '"')) |_| {
+                // escape line for json string
+                var q_iter = std.mem.tokenizeScalar(u8, line, '"');
+                while (q_iter.next()) |chunk| {
+                    try list.appendSlice(chunk);
+                    try list.append('\\');
+                    try list.append('"');
+                }
+                _ = list.pop();
+                _ = list.pop();
+            } else {
+                try list.appendSlice(line);
             }
-            if (i < line.len) try list.appendSlice(line[i..]);
+
             try list.append('"');
             try list.append(',');
             try list.append('\n');
@@ -96,7 +105,7 @@ pub fn main() !void {
 
         // reset list
         // std.debug.print("pre list len: {d}\n", .{list.items.len});
-        while (list.popOrNull()) |_| {}
+        while (list.pop()) |_| {}
         // std.debug.print("post list len: {d}\n", .{list.items.len});
     }
 }

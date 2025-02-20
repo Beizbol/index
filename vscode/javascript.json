@@ -2,11 +2,11 @@
 	"New+ JS": {
 		"prefix": "!!",
 		"body": [
-"const name = \"const name = "module.run\";",
-"function run() {",
-"    console.log(\"    console.log("doing something\");",
-"}",
-"export { name, run };"
+			"const name = \"module.run\";",
+			"function run() {",
+			"    console.log(\"doing something\");",
+			"}",
+			"export { name, run };"
 		],
 		"description": "New & Improved JS File."
 	}
