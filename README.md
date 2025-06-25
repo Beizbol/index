@@ -24,10 +24,6 @@ See `/dev` folder for the tool to generate the snippets.
 
 [fixi](https://github.com/bigskysoftware/fixi)
 
-[reset]
-
-[vscode](https://code.visualstudio.com/)
-
 ## License
 
 MIT

@@ -1,42 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Title</title>
-        <link rel="stylesheet" href="style.css">
-        <script type="module" src="module.js" defer>
-            import { name, run } from "./module.js";
-            console.log("running", name);
-            run();
-        </script>
-        <style>
-            html {
-                color-scheme: light dark;
-            }
-        </style>
-        <script>
-            const cs = localStorage.getItem("colorScheme");
-            if (!cs) return;
-
-            const css_root = document.rootElement.style;
-
-            if (cs === "dark") {
-                css_root.colorScheme = "dark";
-                return;
-            }
-
-            if (cs === "light") {
-                css_root.colorScheme = "light";
-                return;
-            }
-        </script>
-    </head>
-    <body>
-        <header><nav><a href="/">Home</a></nav></header>
-        <main>
-            <h1>Title</h1>
-        </main>
-        <footer>Copyright &copy; 2025.</footer>
-    </body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <title>Base</title>
+    <script>
+      (function() {
+        const saved = localStorage.getItem('theme');
+        if (['dark','light'].includes(saved)) {
+          document.documentElement.classList.add(saved);
+        }
+      })();
+    </script>
+    <style>
+      html { 
+        font-family: system-ui, helvetica, sans-serif;
+        transition: background-color 0.2s ease, color 0.2s ease;
+      }
+      html.light { color-scheme: light; }
+      html.dark { color-scheme: dark; }
+      #btnDark { color-scheme: dark; }
+      #btnLight { color-scheme: light; }
+      #btnAuto { color-scheme: light dark; }
+      @media (prefers-color-scheme: dark) {
+        #btnDark { display: none; }
+        #btnAuto { color-scheme: dark; }
+        html:not(.light) {
+          background-color: #111;
+          color: white;
+        }
+      }
+      @media (prefers-color-scheme: light) {
+        #btnLight { display: none; }
+        #btnAuto { color-scheme: light; }
+        html:not(.dark) {
+          background-color: white;
+          color: black;
+        }
+      }
+      .themes { 
+        display: flex; 
+        gap: 0.25rem;
+        justify-content: end;
+      }
+      .themes button { 
+        cursor: pointer;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">Home</a>
+      </nav>
+      <div class="themes">
+        <button id="btnDark" aria-label="Enable dark mode">🌙</button>
+        <button id="btnLight" aria-label="Enable light mode">🌞</button>
+        <button id="btnAuto" aria-label="Use system theme">🤖</button>
+      </div>
+    </header>
+    <main id="main">
+      <h1>Base</h1>
+    </main>
+    <footer>Copyright &copy; 2025.</footer>
+    <script>
+      const btnDark = document.getElementById('btnDark');
+      const btnLight = document.getElementById('btnLight');
+      const btnAuto = document.getElementById('btnAuto');
+      function update() {
+        const saved = localStorage.getItem('theme');
+        btnDark.hidden = saved === 'dark';
+        btnLight.hidden = saved === 'light';
+        btnAuto.hidden = saved === null;
+      }
+      update();
+      const html = document.documentElement.classList;
+      btnDark.onclick = () => {
+        html.add('dark');
+        html.remove('light');
+        localStorage.setItem('theme', 'dark');
+        update();
+      }; 
+      btnLight.onclick = () => {
+        html.add('light');
+        html.remove('dark');
+        localStorage.setItem('theme', 'light');
+        update();
+      }; 
+      btnAuto.onclick = () => {
+        html.remove('dark');
+        html.remove('light');
+        localStorage.removeItem('theme');
+        update();
+      };
+    </script>
+  </body>
 </html>
